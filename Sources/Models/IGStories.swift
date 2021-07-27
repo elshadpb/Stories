@@ -22,7 +22,7 @@ public class IGStories: Codable {
         case count = "count"
         case stories = "stories"
     }
-    func copy() throws -> IGStories {
+    public func copy() throws -> IGStories {
         let data = try JSONEncoder().encode(self)
         let copy = try JSONDecoder().decode(IGStories.self, from: data)
         return copy
