@@ -36,9 +36,8 @@ public class IGSnap: Codable {
             return UserDefaults.standard.value(forKey: internalIdentifier) != nil
         }
     }
-
     
-    init(internalIdentifier: String, mimeType: String, lastUpdated: String, url: String) {
+    public init(internalIdentifier: String, mimeType: String, lastUpdated: String, url: String) {
         self.internalIdentifier = internalIdentifier
         self.mimeType = mimeType
         self.lastUpdated = lastUpdated

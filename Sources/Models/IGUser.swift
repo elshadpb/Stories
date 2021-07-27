@@ -12,7 +12,7 @@ public class IGUser: Codable {
     public let name: String
     public let picture: String?
     
-    init(internalIdentifier: String, name: String, picture: String) {
+    public init(internalIdentifier: String, name: String, picture: String) {
         self.internalIdentifier = internalIdentifier
         self.name = name
         self.picture = picture
