@@ -13,7 +13,7 @@ public class IGStories: Codable {
     public let stories: [IGStory]
     
     
-    init(count: Int, stories: [IGStory]) {
+    public init(count: Int, stories: [IGStory]) {
         self.count = count
         self.stories = stories
     }

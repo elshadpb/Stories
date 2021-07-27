@@ -18,7 +18,7 @@ public class IGStory: Codable {
     var isCompletelyVisible = false
     var isCancelledAbruptly = false
     
-    init(snapsCount: Int, snaps: [IGSnap], internalIdentifier: String, lastUpdated: Int, user: IGUser) {
+    public init(snapsCount: Int, snaps: [IGSnap], internalIdentifier: String, lastUpdated: Int, user: IGUser) {
         self.snapsCount = snapsCount
         self.snaps = snaps
         self.internalIdentifier = internalIdentifier
@@ -30,7 +30,6 @@ public class IGStory: Codable {
         self.isCancelledAbruptly = false
     }
 
-    
     enum CodingKeys: String, CodingKey {
         case snapsCount = "snaps_count"
         case snaps = "snaps"
