@@ -56,6 +56,14 @@ final class IGStoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
     private var videoSnapIndex: Int = 0
     var retryBtn: IGRetryLoaderButton!
     var longPressGestureState: UILongPressGestureRecognizer.State?
+    private let headers = [
+        "db-access-token": AuthService.shared.user.tokens?.accessToken,
+        "db-refresh-token": AuthService.shared.user.tokens?.refreshToken,
+        "db-user-agent": "iOS Application Client Via Alamofire",
+        "Accept": "application/json",
+        "Client-Type": "SME-MOBILE-APP",
+        "dp-customer-id": PBUserDefaults.getString(key: PbKeys.UserInfo.customerId.rawValue)
+    ]
     
     //MARK:- Public iVars
     public var direction: SnapMovementDirectionState = .forward
@@ -79,10 +87,10 @@ final class IGStoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
                         if let snap = story?.snaps[snapIndex] {
                             if snap.kind != MimeType.video {
                                 if let snapView = getSnapview() {
-                                    startRequest(snapView: snapView, with: snap.url)
+                                    startRequest(snapView: snapView, with: snap.url, withHeaders: headers)
                                 } else {
                                     let snapView = createSnapView()
-                                    startRequest(snapView: snapView, with: snap.url)
+                                    startRequest(snapView: snapView, with: snap.url, withHeaders: headers)
                                 }
                             }else {
                                 if let videoView = getVideoView(with: snapIndex) {
@@ -100,7 +108,7 @@ final class IGStoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
                         if let snap = story?.snaps[snapIndex] {
                             if snap.kind != MimeType.video {
                                 if let snapView = getSnapview() {
-                                    self.startRequest(snapView: snapView, with: snap.url)
+                                    self.startRequest(snapView: snapView, with: snap.url, withHeaders: headers)
                                 }
                             }else {
                                 if let videoView = getVideoView(with: snapIndex) {
@@ -245,8 +253,8 @@ final class IGStoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
         return nil
     }
     
-    private func startRequest(snapView: UIImageView, with url: String) {
-        snapView.setImage(url: url, style: .squared) {[weak self] (result) in
+    private func startRequest(snapView: UIImageView, with url: String, withHeaders headers: [String: String]) {
+        snapView.setImage(url: url, withHeaders: headers, style: .squared) {[weak self] (result) in
             guard let strongSelf = self else { return }
             DispatchQueue.main.async {
                 switch result {
@@ -278,7 +286,7 @@ final class IGStoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
                     switch result {
                         case .success(let url):
                             let videoResource = VideoResource(filePath: url.absoluteString)
-                            videoView.play(with: videoResource)
+                            videoView.play(with: videoResource, withHeaders: headers)
                         case .failure(let error):
                             videoView.stopAnimating()
                             debugPrint("Video error: \(error)")
@@ -643,7 +651,7 @@ final class IGStoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
     public func retryRequest(view: UIView, with url: String) {
         if let v = view as? UIImageView {
             v.removeRetryButton()
-            self.startRequest(snapView: v, with: url)
+            self.startRequest(snapView: v, with: url, withHeaders: headers)
         }else if let v = view as? IGPlayerView {
             v.removeRetryButton()
             self.startPlayer(videoView: v, with: url)
