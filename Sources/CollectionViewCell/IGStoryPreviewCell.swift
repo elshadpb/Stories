@@ -59,14 +59,6 @@ final class IGStoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
     private var videoSnapIndex: Int = 0
     var retryBtn: IGRetryLoaderButton!
     var longPressGestureState: UILongPressGestureRecognizer.State?
-    private let headers = [
-        "db-access-token": AuthService.shared.user.tokens?.accessToken,
-        "db-refresh-token": AuthService.shared.user.tokens?.refreshToken,
-        "db-user-agent": "iOS Application Client Via Alamofire",
-        "Accept": "application/json",
-        "Client-Type": "SME-MOBILE-APP",
-        "dp-customer-id": PBUserDefaults.getString(key: PbKeys.UserInfo.customerId.rawValue)
-    ]
     
     //MARK:- Public iVars
     public var direction: SnapMovementDirectionState = .forward
@@ -289,7 +281,7 @@ final class IGStoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
                     switch result {
                         case .success(let url):
                             let videoResource = VideoResource(filePath: url.absoluteString)
-                            videoView.play(with: videoResource, withHeaders: headers)
+                            videoView.play(with: videoResource, withHeaders: self.headers)
                         case .failure(let error):
                             videoView.stopAnimating()
                             debugPrint("Video error: \(error)")
