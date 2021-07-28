@@ -53,6 +53,9 @@ final class IGStoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
     private var snapViewXPos: CGFloat {
         return (snapIndex == 0) ? 0 : scrollview.subviews[previousSnapIndex].frame.maxX
     }
+    
+    public var headers = [String: String]()
+    
     private var videoSnapIndex: Int = 0
     var retryBtn: IGRetryLoaderButton!
     var longPressGestureState: UILongPressGestureRecognizer.State?
@@ -121,7 +124,7 @@ final class IGStoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
         didSet {
             storyHeaderView.story = story
             if let picture = story?.user.picture {
-                storyHeaderView.snaperImageView.setImage(url: picture)
+                storyHeaderView.snaperImageView.setImage(url: picture, withHeaders: headers)
             }
         }
     }

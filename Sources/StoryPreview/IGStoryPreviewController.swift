@@ -64,6 +64,8 @@ public final class IGStoryPreviewController: UIViewController, UIGestureRecogniz
         return alertController
     }()
     
+    public var headers:[String: String] = [:]
+    
     //MARK: - Overriden functions
     public override func loadView() {
         super.loadView()
@@ -110,10 +112,11 @@ public final class IGStoryPreviewController: UIViewController, UIGestureRecogniz
         isTransitioning = true
         _view.snapsCollectionView.collectionViewLayout.invalidateLayout()
     }
-    public init(layout:IGLayoutType = .cubic,stories: IGStories,handPickedStoryIndex: Int) {
+    public init(layout:IGLayoutType = .cubic,stories: IGStories,handPickedStoryIndex: Int, withHeaders headers: [String: String]) {
         self.layoutType = layout
         self.stories = stories
         self.handPickedStoryIndex = handPickedStoryIndex
+        self.headers = headers
         super.init(nibName: nil, bundle: nil)
     }
     required init?(coder aDecoder: NSCoder) {
@@ -152,6 +155,7 @@ extension IGStoryPreviewController:UICollectionViewDataSource {
         }
         let story = viewModel?.cellForItemAtIndexPath(indexPath)
         cell.story = story
+        cell.headers = headers
         cell.delegate = self
         currentIndexPath = indexPath
         nStoryIndex = indexPath.item
