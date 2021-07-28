@@ -8,7 +8,7 @@
 import Foundation
 
 public enum MimeType: String {
-    case image
+    case photo
     case video
     case unknown
 }
@@ -19,9 +19,9 @@ public class IGSnap: Codable {
     public let url: String
     public var kind: MimeType {
         switch mimeType {
-        case MimeType.image.rawValue:
-            return MimeType.image
-        case MimeType.video.rawValue:
+        case MimeType.photo.rawValue.uppercased():
+            return MimeType.photo
+        case MimeType.video.rawValue.uppercased():
             return MimeType.video
         default:
             return MimeType.unknown
