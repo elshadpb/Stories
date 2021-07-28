@@ -11,24 +11,29 @@ import Foundation
 class IGStoryPreviewModel: NSObject {
     
     //MARK:- iVars
-    let stories: [IGStory]
-    let handPickedStoryIndex: Int //starts with(i)
+    var stories: IGStories?
+    var handPickedStoryIndex: Int? //starts with(i)
     
     //MARK:- Init method
-    init(_ stories: [IGStory], _ handPickedStoryIndex: Int) {
+    init(_ stories: IGStories, _ handPickedStoryIndex: Int) {
         self.stories = stories
         self.handPickedStoryIndex = handPickedStoryIndex
     }
     
     //MARK:- Functions
     func numberOfItemsInSection(_ section: Int) -> Int {
-            return stories.count
+        if let count = stories?.count {
+            return count
+        }
+        return 0
     }
     func cellForItemAtIndexPath(_ indexPath: IndexPath) -> IGStory? {
-        if indexPath.item < stories.count {
-            return stories[indexPath.item]
+        guard let count = stories?.count else {return nil}
+        if indexPath.item < count {
+            return stories?.stories[indexPath.item]
         }else {
             fatalError("Stories Index mis-matched :(")
         }
     }
 }
+
