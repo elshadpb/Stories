@@ -54,7 +54,6 @@ final class IGStoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
         return (snapIndex == 0) ? 0 : scrollview.subviews[previousSnapIndex].frame.maxX
     }
     private var videoSnapIndex: Int = 0
-    private var handpickedSnapIndex: Int = 0
     var retryBtn: IGRetryLoaderButton!
     var longPressGestureState: UILongPressGestureRecognizer.State?
     
@@ -247,15 +246,12 @@ final class IGStoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
     }
     
     private func startRequest(snapView: UIImageView, with url: String) {
-        snapView.setImage(url: url, style: .squared) { result in
-            DispatchQueue.main.async { [weak self] in
-                guard let strongSelf = self else { return}
+        snapView.setImage(url: url, style: .squared) {[weak self] (result) in
+            guard let strongSelf = self else { return }
+            DispatchQueue.main.async {
                 switch result {
                     case .success(_):
-                        /// Start progressor only if handpickedSnapIndex matches with snapIndex and the requested image url should be matched with current snapIndex imageurl
-                        if(strongSelf.handpickedSnapIndex == strongSelf.snapIndex && url == strongSelf.story!.snaps[strongSelf.snapIndex].url) {
-                            strongSelf.startProgressors()
-                    }
+                        strongSelf.startProgressors()
                     case .failure(_):
                         strongSelf.showRetryButton(with: url, for: snapView)
                 }
@@ -278,15 +274,11 @@ final class IGStoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
         if scrollview.subviews.count > 0 {
             if story?.isCompletelyVisible == true {
                 videoView.startAnimating()
-                IGVideoCacheManager.shared.getFile(for: url) { [weak self] (result) in
-                    guard let strongSelf = self else { return }
+                IGVideoCacheManager.shared.getFile(for: url) { (result) in
                     switch result {
-                        case .success(let videoURL):
-                            /// Start progressor only if handpickedSnapIndex matches with snapIndex
-                            if(strongSelf.handpickedSnapIndex == strongSelf.snapIndex) {
-                                let videoResource = VideoResource(filePath: videoURL.absoluteString)
-                                videoView.play(with: videoResource)
-                        }
+                        case .success(let url):
+                            let videoResource = VideoResource(filePath: url.absoluteString)
+                            videoView.play(with: videoResource)
                         case .failure(let error):
                             videoView.stopAnimating()
                             debugPrint("Video error: \(error)")
@@ -376,7 +368,6 @@ final class IGStoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
                 let offset = CGPoint(x: x,y: 0)
                 scrollview.setContentOffset(offset, animated: false)
                 story?.lastPlayedSnapIndex = n
-                handpickedSnapIndex = n
                 snapIndex = n
             } else {
                 delegate?.didCompletePreview()
@@ -393,7 +384,6 @@ final class IGStoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
                 scrollview.setContentOffset(offset, animated: false)
                 story?.lastPlayedSnapIndex = n
                 direction = .forward
-                handpickedSnapIndex = n
                 snapIndex = n
             }else {
                 stopPlayer()
@@ -549,7 +539,6 @@ final class IGStoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
         /**
          Once we set isDeleted, snaps and snaps count will be reduced by one. So, instead of snapIndex+1, we need to pass snapIndex to willMoveToPreviousOrNextSnap. But the corresponding progressIndicator is not currently in active. Another possible way is we can always remove last presented progress indicator. So that snapIndex and tag will matches, so that progress indicator starts.
          */
-        story?.snaps[snapIndex].isDeleted = true
         direction = .forward
         for sIndex in 0..<snapIndex {
             if let holderView = self.getProgressIndicatorView(with: sIndex),
@@ -570,10 +559,9 @@ final class IGStoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
     }
     
     //MARK: - Public functions
-    public func willDisplayCellForZerothIndex(with sIndex: Int, handpickedSnapIndex: Int) {
-        self.handpickedSnapIndex = handpickedSnapIndex
+    public func willDisplayCellForZerothIndex(with sIndex: Int) {
         story?.isCompletelyVisible = true
-        willDisplayCell(with: handpickedSnapIndex)
+        willDisplayCell(with: sIndex)
     }
     public func willDisplayCell(with sIndex: Int) {
         //Todo:Make sure to move filling part and creating at one place

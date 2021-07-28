@@ -28,15 +28,6 @@ public class IGSnap: Codable {
         }
     }
     
-    public var isDeleted: Bool {
-        set{
-            UserDefaults.standard.set(newValue, forKey: internalIdentifier)
-        }
-        get{
-            return UserDefaults.standard.value(forKey: internalIdentifier) != nil
-        }
-    }
-    
     public init(internalIdentifier: String, mimeType: String, lastUpdated: String, url: String) {
         self.internalIdentifier = internalIdentifier
         self.mimeType = mimeType
