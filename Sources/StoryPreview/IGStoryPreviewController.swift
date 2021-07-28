@@ -19,7 +19,7 @@ public final class IGStoryPreviewController: UIViewController, UIGestureRecogniz
     private var _view: IGStoryPreviewView {return view as! IGStoryPreviewView}
     private var viewModel: IGStoryPreviewModel?
     
-    private(set) var stories: [IGStory]
+    private(set) var stories: IGStories
     /** This index will tell you which Story, user has picked*/
     private(set) var handPickedStoryIndex: Int //starts with(i)
     /** This index will tell you which Snap, user has picked*/
