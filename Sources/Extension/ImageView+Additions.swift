@@ -26,6 +26,7 @@ extension UIImageView: IGImageRequestable {
         
         clipsToBounds = true
         setImage(urlString: url, withHeaders: headers) { (response) in
+            print("SET IMAGE HEADERS \(headers)")
             if let completion = completion {
                 switch response {
                 case .success(_):
