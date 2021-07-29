@@ -187,7 +187,6 @@ extension IGPlayerView: PlayerControls {
                 strongSelf.player = existingPlayer
             }
         } else {
-            print("VIDEO PLAYER URL \(url), VIDEO PLAYER HEADERS \(headers)")
             let asset = AVURLAsset(url: url, options: ["AVURLAssetHTTPHeaderFieldsKey": headers])
             playerItem = AVPlayerItem(asset: asset)
             player = AVPlayer(playerItem: playerItem)
