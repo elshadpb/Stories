@@ -180,7 +180,7 @@ extension IGPlayerView: PlayerControls {
     
     func play(with resource: VideoResource, withHeaders headers: [String: String] = [:]) {
         
-        guard let url = URL(string: resource.filePath.appending(".mp4")) else {fatalError("Unable to form URL from resource")}
+        guard let url = URL(string: resource.filePath) else {fatalError("Unable to form URL from resource")}
         if let existingPlayer = player {
             DispatchQueue.main.async { [weak self] in
                 guard let strongSelf = self else { return }
