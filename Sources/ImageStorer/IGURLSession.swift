@@ -31,6 +31,7 @@ extension IGURLSession {
         headers.forEach { (key, value) in
             request.addValue(key, forHTTPHeaderField: value)
         }
+        print("DOWNLOAD IMAGE HEADERS \(headers)")
         dataTasks.append(IGURLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) in
             if let result = data, error == nil, let imageToCache = UIImage(data: result) {
                 IGCache.shared.setObject(imageToCache, forKey: url.absoluteString as AnyObject)
