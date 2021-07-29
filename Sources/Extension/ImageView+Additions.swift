@@ -30,8 +30,10 @@ extension UIImageView: IGImageRequestable {
             if let completion = completion {
                 switch response {
                 case .success(_):
+                    print("IMAGE DOWNLOAD SUCCESS")
                     completion(IGResult.success(true))
                 case .failure(let error):
+                    print("Image download failure error \(error.localizedDescription)")
                     completion(IGResult.failure(error))
                 }
             }
