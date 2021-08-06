@@ -8,17 +8,17 @@
 import Foundation
 
 public struct Story: Codable, Equatable {
-    let id: Int?
-    let titleLanguage: StoryTitle?
-    let createdAt: String?
-    let coverImageId: String?
-    let snaps: [Snap]
+    public let id: Int?
+    public let titleLanguage: StoryTitle?
+    public let createdAt: String?
+    public let coverImageId: String?
+    public let snaps: [Snap]
 
     var lastPlayedSnapIndex = 0
     var isCompletelyVisible = false
     var isCancelledAbruptly = false
 
-    func coverImageUrl(baseURL: String) -> String {
+    public func coverImageUrl(baseURL: String) -> String {
         return "\(baseURL)/v1/stories/image/\(coverImageId ?? "")"
     }
 

@@ -8,12 +8,12 @@
 import Foundation
 
 public struct Snap: Codable {
-    let id: Int?
-    let mediaType: MediaType?
-    let mediaId: String?
-    let snapLanguage: SnapTitle?
+    public let id: Int?
+    public let mediaType: MediaType?
+    public let mediaId: String?
+    public let snapLanguage: SnapTitle?
 
-    func mediaUrl(baseURL: String) -> String {
+    public func mediaUrl(baseURL: String) -> String {
         switch mediaType {
         case .photo:
             return "\(baseURL)/v1/stories/image/\(mediaId ?? "")"

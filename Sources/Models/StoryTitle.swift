@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct StoryTitle: Codable {
-    let azerbaijani: StoryTitleValue?
-    let english: StoryTitleValue?
-    let russian: StoryTitleValue?
+public struct StoryTitle: Codable {
+    public let azerbaijani: StoryTitleValue?
+    public let english: StoryTitleValue?
+    public let russian: StoryTitleValue?
 
     private enum CodingKeys: String, CodingKey {
         case azerbaijani = "az"
@@ -19,6 +19,6 @@ struct StoryTitle: Codable {
     }
 }
 
-struct StoryTitleValue: Codable {
-    var title: String?
+public struct StoryTitleValue: Codable {
+    public var title: String?
 }

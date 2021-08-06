@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct SnapTitle: Codable {
-    let azerbaijani: SnapDetails?
-    let english: SnapDetails?
-    let russian: SnapDetails?
+public struct SnapTitle: Codable {
+    public let azerbaijani: SnapDetails?
+    public let english: SnapDetails?
+    public let russian: SnapDetails?
 
     private enum CodingKeys: String, CodingKey {
         case azerbaijani = "az"
@@ -19,9 +19,9 @@ struct SnapTitle: Codable {
     }
 }
 
-struct SnapDetails: Codable {
-    let title: String?
-    let description: String?
-    let buttonText: String?
-    let buttonLink: String?
+public struct SnapDetails: Codable {
+    public let title: String?
+    public let description: String?
+    public let buttonText: String?
+    public let buttonLink: String?
 }
