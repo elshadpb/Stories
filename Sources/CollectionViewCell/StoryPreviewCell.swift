@@ -36,6 +36,25 @@ final class StoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
         return v
     }()
 
+    private var titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 17, weight: .regular)
+        label.textColor = .white
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        return label
+    }()
+
+    private var subtitleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 26, weight: .regular)
+        label.textColor = .white
+        label.alpha = 0.78
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        return label
+    }()
+
     private lazy var actionButton: UIButton = {
         let button =  UIButton()
         button.isHidden = true
@@ -160,6 +179,20 @@ final class StoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+
+    fileprivate func setTitle(text: String) {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.03
+        titleLabel.attributedText = NSMutableAttributedString(string: text, attributes: [NSAttributedString.Key.kern: 0.36, NSAttributedString.Key.paragraphStyle: paragraphStyle])
+    }
+
+    fileprivate func setSubtitle(text: String) {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.08
+        subtitleLabel.attributedText = NSMutableAttributedString(string: text, attributes: [NSAttributedString.Key.kern: -0.41, NSAttributedString.Key.paragraphStyle: paragraphStyle])
+    }
+
+
     
     //MARK: - Private functions
     private func setupUIElements() {
@@ -167,6 +200,8 @@ final class StoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
         scrollview.isPagingEnabled = true
         contentView.addSubview(scrollview)
         contentView.addSubview(storyHeaderView)
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(subtitleLabel)
         contentView.addSubview(actionButton)
         contentView.addSubview(activityIndicator)
         contentView.addSubview(errorImageView)
@@ -177,6 +212,8 @@ final class StoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
 
         scrollview.easy.layout(Left().to(contentView.safeAreaLayoutGuide, .left), Top().to(contentView.safeAreaLayoutGuide, .top), Right().to(contentView.safeAreaLayoutGuide, .right), Bottom().to(contentView.safeAreaLayoutGuide, .bottom), Width().like(contentView, .width).with(.low), Height().like(contentView, .height).with(.low))
         storyHeaderView.easy.layout(Left(), Right(), Top(), Height(80))
+        titleLabel.easy.layout(Leading(24), Trailing(24), Top(8).to(storyHeaderView, .bottom))
+        subtitleLabel.easy.layout(Leading(24), Trailing(24), Top(8).to(titleLabel, .bottom))
         actionButton.easy.layout(Leading(24), Trailing(24), Bottom(24), Height(56))
         errorImageView.easy.layout(Center())
 
@@ -575,17 +612,25 @@ final class StoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
     private func configureActionButton(_ snap: Snap) {
         actionButton.isHidden = true
         actionButtonLink = nil
+        titleLabel.text = nil
+        subtitleLabel.text = nil
         let languagePrefix = Bundle.main.preferredLocalizations.first?.prefix(2)
         switch languagePrefix {
         case "az":
             actionButton.setTitle(snap.snapLanguage?.azerbaijani?.buttonText, for: .normal)
             actionButtonLink = snap.snapLanguage?.azerbaijani?.buttonLink
+            setTitle(text: snap.snapLanguage?.azerbaijani?.title ?? "")
+            setSubtitle(text: snap.snapLanguage?.azerbaijani?.description ?? "")
         case "ru":
             actionButton.setTitle(snap.snapLanguage?.russian?.buttonText, for: .normal)
             actionButtonLink = snap.snapLanguage?.russian?.buttonLink
+            setTitle(text: snap.snapLanguage?.russian?.title ?? "")
+            setSubtitle(text: snap.snapLanguage?.russian?.description ?? "")
         default:
             actionButton.setTitle(snap.snapLanguage?.english?.buttonText, for: .normal)
             actionButtonLink = snap.snapLanguage?.english?.buttonLink
+            setTitle(text: snap.snapLanguage?.english?.title ?? "")
+            setSubtitle(text: snap.snapLanguage?.english?.description ?? "")
         }
         if !(actionButton.title(for: .normal)?.isEmpty ?? true) {
             actionButton.isHidden = false

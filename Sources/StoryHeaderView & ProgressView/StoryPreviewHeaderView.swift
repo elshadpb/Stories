@@ -66,8 +66,7 @@ final class StoryPreviewHeaderView: UIView {
     }
     private func installLayoutConstraints() {
         let pv = getProgressView
-        pv.easy.layout(Left().to(self.safeAreaLayoutGuide, .left), Top(8).to(self.safeAreaLayoutGuide, .top), Height(10))
-        self.easy.layout(Right().to(pv.safeAreaLayoutGuide, .right))
+        pv.easy.layout(Left().to(self.safeAreaLayoutGuide, .left), Right().to(self.safeAreaLayoutGuide, .right), Top(8).to(self.safeAreaLayoutGuide, .top), Height(10))
         closeButton.easy.layout(CenterY().to(self.safeAreaLayoutGuide, .centerY), Right().to(self.safeAreaLayoutGuide, .right))
     }
 
