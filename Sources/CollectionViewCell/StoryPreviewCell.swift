@@ -38,7 +38,7 @@ final class StoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
 
     private var titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 17, weight: .regular)
+        label.font = .systemFont(ofSize: 26, weight: .regular)
         label.textColor = .white
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
@@ -47,7 +47,7 @@ final class StoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
 
     private var subtitleLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 26, weight: .regular)
+        label.font = .systemFont(ofSize: 17, weight: .regular)
         label.textColor = .white
         label.alpha = 0.78
         label.numberOfLines = 0
