@@ -108,6 +108,8 @@ final class StoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
     
     private var videoSnapIndex: Int = 0
 
+    var storyActionCallback: (() -> Void)?
+
     var longPressGestureState: UILongPressGestureRecognizer.State?
 
     var baseURL: String!
@@ -392,6 +394,7 @@ final class StoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
 
     @objc private func handleActionButton() {
         if let link = actionButtonLink, let url = URL(string: link) {
+            storyActionCallback?()
             let config = SFSafariViewController.Configuration()
             config.entersReaderIfAvailable = true
 

@@ -14,6 +14,7 @@ import EasyPeasy
  While Snap.done->Next.snap(continues)->done
  then Story Completed
  */
+
 public final class StoryPreviewController: UIViewController, UIGestureRecognizerDelegate {
     
     //MARK: - Private Vars
@@ -55,6 +56,8 @@ public final class StoryPreviewController: UIViewController, UIGestureRecognizer
     public override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }
+
+    public var storyActionCallback: (() -> Void)?
     
     //MARK: - Overriden functions
     public override func loadView() {
@@ -120,6 +123,7 @@ extension StoryPreviewController:UICollectionViewDataSource {
         cell.headers = headers
         cell.baseURL = baseURL
         cell.delegate = self
+        cell.storyActionCallback = self.storyActionCallback
         currentIndexPath = indexPath
         nStoryIndex = indexPath.item
         return cell
