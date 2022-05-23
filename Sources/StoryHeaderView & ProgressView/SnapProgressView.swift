@@ -37,7 +37,7 @@ extension ViewAnimator where Self: SnapProgressView {
             self?.state = .finished
             if finished == true {
                 if let strongSelf = self {
-                    return completion(strongSelf.story_identifier!, strongSelf.snapIndex!, strongSelf.story.isCancelledAbruptly)
+                    return completion(strongSelf.story_identifier ?? "Unknown", strongSelf.snapIndex ?? 0, strongSelf.story.isCancelledAbruptly)
                 }
             } else {
                 return completion(self?.story_identifier ?? "Unknown", self?.snapIndex ?? 0, self?.story.isCancelledAbruptly ?? true)
