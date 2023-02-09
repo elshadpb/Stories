@@ -17,8 +17,22 @@ public struct StoryTitle: Codable {
         case english = "en"
         case russian = "ru"
     }
+    
+    public init(
+        azerbaijani: StoryTitleValue?,
+        english: StoryTitleValue?,
+        russian: StoryTitleValue?
+    ) {
+        self.azerbaijani = azerbaijani
+        self.english = english
+        self.russian = russian
+    }
 }
 
 public struct StoryTitleValue: Codable {
     public var title: String?
+    
+    public init(title: String?) {
+        self.title = title
+    }
 }
