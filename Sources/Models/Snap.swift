@@ -23,4 +23,16 @@ public struct Snap: Codable {
             return ""
         }
     }
+    
+    public init(
+        id: Int?,
+        mediaType: MediaType?,
+        mediaId: String?,
+        snapLanguage: SnapTitle?
+    ) {
+        self.id = id
+        self.mediaType = mediaType
+        self.mediaId = mediaId
+        self.snapLanguage = snapLanguage
+    }
 }

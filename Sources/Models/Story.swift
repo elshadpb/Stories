@@ -29,5 +29,24 @@ public struct Story: Codable, Equatable {
     private enum CodingKeys: String, CodingKey {
         case id, titleLanguage, createdAt, coverImageId, snaps
     }
+    
+    public init(
+        id: Int?,
+        titleLanguage: StoryTitle?,
+        createdAt: String?,
+        coverImageId: String?,
+        snaps: [Snap],
+        lastPlayedSnapIndex: Int = 0,
+        isCompletelyVisible: Bool = false,
+        isCancelledAbruptly: Bool = false
+    ) {
+        self.id = id
+        self.titleLanguage = titleLanguage
+        self.createdAt = createdAt
+        self.coverImageId = coverImageId
+        self.snaps = snaps
+        self.lastPlayedSnapIndex = lastPlayedSnapIndex
+        self.isCompletelyVisible = isCompletelyVisible
+        self.isCancelledAbruptly = isCancelledAbruptly
+    }
 }
-

@@ -17,6 +17,16 @@ public struct SnapTitle: Codable {
         case english = "en"
         case russian = "ru"
     }
+    
+    public init(
+        azerbaijani: SnapDetails?,
+        english: SnapDetails?,
+        russian: SnapDetails?
+    ) {
+        self.azerbaijani = azerbaijani
+        self.english = english
+        self.russian = russian
+    }
 }
 
 public struct SnapDetails: Codable {
@@ -24,4 +34,16 @@ public struct SnapDetails: Codable {
     public let description: String?
     public let buttonText: String?
     public let buttonLink: String?
+    
+    public init(
+        title: String?,
+        description: String?,
+        buttonText: String?,
+        buttonLink: String?
+    ) {
+        self.title = title
+        self.description = description
+        self.buttonText = buttonText
+        self.buttonLink = buttonLink
+    }
 }
