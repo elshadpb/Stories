@@ -9,7 +9,7 @@
 import UIKit
 import EasyPeasy
 
-protocol StoryPreviewHeaderProtocol:class {func didTapCloseButton()}
+protocol StoryPreviewHeaderProtocol: AnyObject { func didTapCloseButton() }
 
 fileprivate let maxSnaps = 30
 
@@ -22,7 +22,7 @@ final class StoryPreviewHeaderView: UIView {
     //MARK: - iVars
     public weak var delegate: StoryPreviewHeaderProtocol?
     fileprivate var snapsPerStory: Int = 0
-    public var story: Story? {
+    public var story: StoryStateModel? {
         didSet {
             snapsPerStory  = (story?.snaps.count)! < maxSnaps ? (story?.snaps.count)! : maxSnaps
         }

@@ -10,6 +10,7 @@ import UIKit
 import AVKit
 import EasyPeasy
 import SafariServices
+import Kingfisher
 
 protocol StoryPreviewProtocol: UIViewController {
     func didCompletePreview()
@@ -133,20 +134,20 @@ final class StoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
 
                     if snap.mediaType != .video {
                         if let snapView = getSnapview() {
-                            startRequest(snapView: snapView, with: snap.mediaUrl(baseURL: baseURL), withHeaders: headers)
+                            startRequest(snapView: snapView, snap: snap)
                         } else {
                             if direction == .forward {
                                 let snapView = createSnapView()
-                                startRequest(snapView: snapView, with: snap.mediaUrl(baseURL: baseURL), withHeaders: headers)
+                                startRequest(snapView: snapView, snap: snap)
                             }
                         }
                     } else {
 
                         if let videoView = getVideoView(with: snapIndex) {
-                            startPlayer(videoView: videoView, withRemoteURL: snap.mediaUrl(baseURL: baseURL))
+                            startPlayer(videoView: videoView, snap: snap)
                         } else {
                             let videoView = createVideoView()
-                            startPlayer(videoView: videoView, withRemoteURL: snap.mediaUrl(baseURL: baseURL))
+                            startPlayer(videoView: videoView, snap: snap)
                         }
                     }
                 }
@@ -154,7 +155,7 @@ final class StoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
 
         }
     }
-    public var story: Story? {
+    public var story: StoryStateModel? {
         didSet {
             storyHeaderView.story = story
         }
@@ -259,38 +260,44 @@ final class StoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
         return nil
     }
     
-    private func startRequest(snapView: UIImageView, with url: String, withHeaders headers: [String: String]) {
+    private func startRequest(snapView imageView: UIImageView, snap: SnapState) {
         errorImageView.isHidden = true
-        startAnimating()
-        snapView.setStoryImage(urlString: url, withHeaders: headers) {[weak self] (result) in
-            guard let strongSelf = self else { return }
-            DispatchQueue.main.async {
-                strongSelf.stopAnimating()
-                switch result {
-                case .success(_):
-                    strongSelf.startProgressors()
-                case .failure(_):
-                    strongSelf.errorImageView.isHidden = false
+        snap.callbacks.localURLState = { [weak self, weak imageView] state in
+            switch state {
+            case .preparing:
+                self?.startAnimating()
+            case .fail:
+                self?.stopAnimating()
+                self?.errorImageView.isHidden = false
+            case .ready(let localURL):
+                imageView?.kf.setImage(with: .provider(
+                    LocalFileImageDataProvider(fileURL: localURL, cacheKey: snap.mediaId)
+                )) { _ in
+                    self?.startProgressors()
                 }
+                self?.stopAnimating()
             }
         }
+        snap.callbacks.startLocalURLFetch?()
     }
-
-    private func startPlayer(videoView: PlayerView, withRemoteURL url: String) {
+    
+    private func startPlayer(videoView: PlayerView, snap: SnapState) {
         if scrollview.subviews.count > 0 {
             if story?.isCompletelyVisible == true {
-                startAnimating()
-                VideoCacheManager.shared.getFile(forURL: url, with: self.headers) { (result) in
-                    self.stopAnimating()
-                    switch result {
-                    case .success(let url):
-                        let videoResource = VideoResource(filePath: url.absoluteString)
-                        videoView.play(with: videoResource, withHeaders: self.headers)
-                    case .failure(let error):
-                        self.errorImageView.isHidden = false
-                        debugPrint("Video error: \(error)")
+                snap.callbacks.localURLState = { [weak self] state in
+                    switch state {
+                    case .preparing:
+                        self?.startAnimating()
+                    case .fail:
+                        self?.stopAnimating()
+                        self?.errorImageView.isHidden = false
+                    case .ready(let localURL):
+                        self?.stopAnimating()
+                        let videoResource = VideoResource(filePath: localURL.absoluteString)
+                        videoView.play(with: videoResource, withHeaders: self?.headers ?? [:])
                     }
                 }
+                snap.callbacks.startLocalURLFetch?()
             }
         }
     }
@@ -345,7 +352,8 @@ final class StoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
         if let snap = story?.snaps[snapIndex] {
             if snap.mediaType == .video {
                 let videoView = getVideoView(with: snapIndex)
-                startPlayer(videoView: videoView!, withRemoteURL: snap.mediaUrl(baseURL: baseURL))
+                // startPlayer(videoView: videoView!, withRemoteURL: snap.mediaUrl(baseURL: baseURL))
+                startPlayer(videoView: videoView!, snap: snap)
             } else {
                 startSnapProgress(with: snapIndex)
             }
@@ -480,7 +488,9 @@ final class StoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
     
     //MARK:- Internal functions
     func startProgressors() {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            
             if self.scrollview.subviews.count > 0 {
                 let imageView = self.scrollview.subviews.filter{v in v.tag == self.snapIndex + snapViewTagIndicator}.first as? UIImageView
                 if imageView?.image != nil && self.story?.isCompletelyVisible == true {
@@ -491,7 +501,9 @@ final class StoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
                         let videoView = self.scrollview.subviews.filter{v in v.tag == self.snapIndex + snapViewTagIndicator}.first as? PlayerView
                         let snap = self.story?.snaps[self.snapIndex]
                         if let vv = videoView, self.story?.isCompletelyVisible == true {
-                            self.startPlayer(videoView: vv, withRemoteURL: snap!.mediaUrl(baseURL: self.baseURL))
+                            if let snap {
+                                startPlayer(videoView: vv, snap: snap)
+                            }
                         }
                     }
                 }
@@ -555,10 +567,15 @@ final class StoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
 
     func startAnimating() {
         activityIndicator.isHidden = false
-        activityIndicator.startAnimating()
+        if !activityIndicator.isAnimating {
+            activityIndicator.startAnimating()
+        }
     }
     func stopAnimating() {
-        activityIndicator.stopAnimating()
+        if activityIndicator.isAnimating {
+            activityIndicator.isHidden = true
+            activityIndicator.stopAnimating()
+        }
     }
     
     public func pauseSnapProgressors(with sIndex: Int) {
@@ -612,7 +629,7 @@ final class StoryPreviewCell: UICollectionViewCell, UIScrollViewDelegate {
         }
     }
 
-    private func configureActionButton(_ snap: Snap) {
+    private func configureActionButton(_ snap: SnapState) {
         actionButton.isHidden = true
         actionButtonLink = nil
         titleLabel.text = nil

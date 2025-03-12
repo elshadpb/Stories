@@ -21,14 +21,14 @@ public final class StoryPreviewController: UIViewController, UIGestureRecognizer
     private var _view: StoryPreviewView {return view as! StoryPreviewView}
     private var viewModel: StoryPreviewModel?
     
-    private(set) var stories: [Story]
+    private(set) var stories: [StoryStateModel]
     /** This index will tell you which Story, user has picked*/
     private(set) var handPickedStoryIndex: Int //starts with(i)
     /** This index will tell you which Snap, user has picked*/
     /** This index will help you simply iterate the story one by one*/
     
     private var nStoryIndex: Int = 0 //iteration(i+1)
-    private var story_copy: Story?
+    private var story_copy: StoryStateModel?
     private(set) var layoutType: LayoutType
     private(set) var executeOnce = false
     
@@ -90,7 +90,7 @@ public final class StoryPreviewController: UIViewController, UIGestureRecognizer
         _view.snapsCollectionView.collectionViewLayout.invalidateLayout()
     }
 
-    public init(layout:LayoutType = .cubic, stories: [Story],  handPickedStoryIndex: Int, withHeaders headers: [String: String]) {
+    public init(layout:LayoutType = .cubic, stories: [StoryStateModel],  handPickedStoryIndex: Int, withHeaders headers: [String: String]) {
         self.layoutType = layout
         self.stories = stories
         self.handPickedStoryIndex = handPickedStoryIndex

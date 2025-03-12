@@ -74,7 +74,7 @@ extension ViewAnimator where Self: SnapProgressView {
 final class SnapProgressView: UIView, ViewAnimator {
     public var story_identifier: String?
     public var snapIndex: Int?
-    public var story: Story!
+    public var story: StoryStateModel!
     public var state: ProgressorState = .notStarted
 }
 

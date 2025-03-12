@@ -11,11 +11,11 @@ import Foundation
 class StoryPreviewModel: NSObject {
     
     //MARK:- iVars
-    var stories = [Story]()
+    var stories = [StoryStateModel]()
     var handPickedStoryIndex: Int? //starts with(i)
     
     //MARK:- Init method
-    init(_ stories: [Story], _ handPickedStoryIndex: Int) {
+    init(_ stories: [StoryStateModel], _ handPickedStoryIndex: Int) {
         self.stories = stories
         self.handPickedStoryIndex = handPickedStoryIndex
     }
@@ -24,7 +24,7 @@ class StoryPreviewModel: NSObject {
     func numberOfItemsInSection(_ section: Int) -> Int {
         return stories.count
     }
-    func cellForItemAtIndexPath(_ indexPath: IndexPath) -> Story? {
+    func cellForItemAtIndexPath(_ indexPath: IndexPath) -> StoryStateModel? {
         if indexPath.item < stories.count {
             return stories[indexPath.item]
         }else {

@@ -7,35 +7,23 @@
 
 import Foundation
 
-public struct Story: Codable, Equatable {
+public struct StoryStateModel: Equatable {
     public let id: Int?
     public let titleLanguage: StoryTitle?
     public let createdAt: String?
     public let coverImageId: String?
-    public let snaps: [Snap]
+    public let snaps: [SnapState]
 
     var lastPlayedSnapIndex = 0
     var isCompletelyVisible = false
     var isCancelledAbruptly = false
-
-    public func coverImageUrl(baseURL: String) -> String {
-        return "\(baseURL)/v1/stories/image/\(coverImageId ?? "")"
-    }
-
-    public static func == (lhs: Story, rhs: Story) -> Bool {
-        return lhs.id == rhs.id
-    }
-
-    private enum CodingKeys: String, CodingKey {
-        case id, titleLanguage, createdAt, coverImageId, snaps
-    }
     
     public init(
         id: Int?,
         titleLanguage: StoryTitle?,
         createdAt: String?,
         coverImageId: String?,
-        snaps: [Snap],
+        snaps: [SnapState],
         lastPlayedSnapIndex: Int = 0,
         isCompletelyVisible: Bool = false,
         isCancelledAbruptly: Bool = false
@@ -48,5 +36,9 @@ public struct Story: Codable, Equatable {
         self.lastPlayedSnapIndex = lastPlayedSnapIndex
         self.isCompletelyVisible = isCompletelyVisible
         self.isCancelledAbruptly = isCancelledAbruptly
+    }
+    
+    public static func == (lhs: StoryStateModel, rhs: StoryStateModel) -> Bool {
+        return lhs.id == rhs.id
     }
 }
